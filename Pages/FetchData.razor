@@ -23,7 +23,8 @@ else
             <tr>
                 <th>Flight number</th>
                 <th>Airline</th>
-                <th>is Delayed?</th>
+                <th>Status</th>
+                <th>Departure</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -31,13 +32,14 @@ else
             @foreach (var flight in flights)
             {
                 <tr>
-                    <td>@flight.FlightNumber</td>
-                    <td>@flight.Airline?.Name</td>
-                    <td>@(flight.Delayed == false ? "No" : "Yes")</td>
+                    <td><div style="margin-top:7px">@flight.FlightNumber</div></td>
+                    <td><div style="margin-top:7px">@flight.Airline?.Name</div></td>
+                    <td><div style="margin-top:7px">@(flight.Delayed == false ? "On time" : "Delayed")</div></td>
+                    <td><div style="margin-top:7px">@flight.Takeoff</div></td>
                     <td>
-                        <button class="btn btn-warning" @onclick="@(() => FlightState.ShowConfigureFlightDialog(flight))">Edit</button>
+                        <button class="btn btn-warning" @onclick="() => FlightState.ShowConfigureFlightDialog(flight)">Edit</button>
                         <button class="btn btn-danger" @onclick="() => DeleteFlight(flight)">Delete</button>
-                        </td>
+                    </td>
                 </tr>
             }
         </tbody>

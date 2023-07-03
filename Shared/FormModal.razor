@@ -4,24 +4,46 @@
 
 
 <div class="dialog-container">
-    <div class="dialog">
+    <div class="dialog col-sm-3">
         <div class="dialog-title">
             <h2>@Flight.FlightNumber</h2>
         </div>
-        <form class="dialog-body">
+       
             <div>
                 <EditForm Model="Flight" OnValidSubmit="OnConfirm">
-                <InputFlightNumber @bind-Value="Flight.FlightNumber"></InputFlightNumber>
-                
-                  
+                    <DataAnnotationsValidator />
+                     <div class="col-sm-5 mx-auto">
+                        <div>
+                            <label class="form-label mt-4" for="FlightNumber">Flight Number:
+                            <InputText id="FlightNumber" class="form-control" @bind-Value="Flight.FlightNumber" />
+                            </label>
+                            <ValidationMessage For="@(() => Flight.FlightNumber)" />
+                        </div>
 
-                    <button class="btn btn-secondary mr-auto" @onclick="OnCancel">Cancel</button>
-                    <button type="submit" class="btn btn-success ml-auto">Submit</button>
+                        <div>
+                            <label class="form-label mt-4" for="Takeoff">
+                                Takeoff Date:
+                                <InputDate Type="InputDateType.DateTimeLocal" @bind-Value:format="HH:mm" @bind-Value="Flight.Takeoff" class="form-control" />
+                            </label>
+                            <ValidationMessage For="@(() => Flight.Takeoff)" />
+                        </div>
+
+                        <div style="margin-top:20px">
+                            <label>Delayed </label>
+                            <InputCheckbox @bind-Value="Flight.Delayed" /> 
+                        </div>
+
+                     
+                    </div>
+                    <div class="dialog-buttons">
+                        <button class="btn btn-secondary mr-auto" @onclick="OnCancel">Cancel</button>
+                        <button type="submit" class="btn btn-success ml-auto">Submit</button>
+                    </div>
+                    
                 </EditForm>
                 
+           
             </div>
-        </form>
-
     </div>
 </div>
 
