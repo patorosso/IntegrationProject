@@ -1,14 +1,18 @@
 ﻿@page "/fetchdata"
 @using IntegrationProject.Data
-@inject WeatherForecastService ForecastService
+@using IntegrationProject.Models;
+@using IntegrationProject.FlightState;
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+@inject FlightState FlightState
 
-<PageTitle>Weather forecast</PageTitle>
+<PageTitle>Flight List</PageTitle>
 
-<h1>Weather forecast</h1>
+<h1>Flight list</h1>
 
-<p>This component demonstrates fetching data from a service.</p>
+<p>Listing flights from all around the world.</p>
 
-@if (forecasts == null)
+@if (flights == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -17,31 +21,57 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
+                <th>Flight number</th>
+                <th>Airline</th>
+                <th>is Delayed?</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts)
+            @foreach (var flight in flights)
             {
                 <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
+                    <td>@flight.FlightNumber</td>
+                    <td>@flight.Airline?.Name</td>
+                    <td>@(flight.Delayed == false ? "No" : "Yes")</td>
+                    <td>
+                        <button class="btn btn-warning" @onclick="@(() => FlightState.ShowConfigureFlightDialog(flight))">Edit</button>
+                        <button class="btn btn-danger" @onclick="() => DeleteFlight(flight)">Delete</button>
+                        </td>
                 </tr>
             }
         </tbody>
     </table>
 }
 
-@code {
-    private WeatherForecast[]? forecasts;
+@if (FlightState.ShowingConfigureDialog)
+{
+    <FormModal Flight="FlightState.ConfiguringFlight"
+    OnCancel="FlightState.CancelConfigureFlightDialog"
+    OnConfirm="FlightState.ConfirmConfigureFlightDialog"
+    />
+}
 
-    protected override async Task OnInitializedAsync()
+
+@code {
+
+    private List<Flight>? flights;
+
+    protected override async Task OnInitializedAsync() => flights = await
+    HttpClient.GetFromJsonAsync<List<Flight>>($"{NavigationManager.BaseUri}flights");
+
+    private async Task DeleteFlight(Flight flight)
     {
-        forecasts = await ForecastService.GetForecastAsync(DateOnly.FromDateTime(DateTime.Now));
+        var response = await HttpClient.DeleteAsync($"{NavigationManager.BaseUri}flights/{flight.Id}");
+
+        if (response.IsSuccessStatusCode)
+        {
+            flights?.Remove(flight);
+        }
+        else
+        {
+            // Handle error scenario
+        }
     }
+
 }

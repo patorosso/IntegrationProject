@@ -1,0 +1,37 @@
+﻿@using IntegrationProject.Models;
+@inject HttpClient HttpClient
+@using Microsoft.AspNetCore.Components.Forms
+
+
+<div class="dialog-container">
+    <div class="dialog">
+        <div class="dialog-title">
+            <h2>@Flight.FlightNumber</h2>
+        </div>
+        <form class="dialog-body">
+            <div>
+                <EditForm Model="Flight" OnValidSubmit="OnConfirm">
+                <InputFlightNumber @bind-Value="Flight.FlightNumber"></InputFlightNumber>
+                
+                  
+
+                    <button class="btn btn-secondary mr-auto" @onclick="OnCancel">Cancel</button>
+                    <button type="submit" class="btn btn-success ml-auto">Submit</button>
+                </EditForm>
+                
+            </div>
+        </form>
+
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public required Flight Flight { get; set; }
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+    [Parameter]
+    public EventCallback OnConfirm { get; set; }
+    
+
+}

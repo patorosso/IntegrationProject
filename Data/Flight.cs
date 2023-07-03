@@ -13,11 +13,10 @@ namespace IntegrationProject.Models
 
         public Airline? Airline { get; set; }
 
-
         public short AirlineId { get; set; }
 
-
         public bool Delayed { get; set; }
+
         [Required(ErrorMessage = "El campo es obligatorio.")]
         public DateTime? Takeoff { get; set; }
 

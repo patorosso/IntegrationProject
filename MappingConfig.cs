@@ -3,7 +3,7 @@ using IntegrationProject.Dtos;
 using IntegrationProject.Models;
 
 
-namespace VuelosCRUD
+namespace IntegrationProject
 {
     public class MappingConfig : Profile
     {
