@@ -15,7 +15,7 @@
         </div>
     </div>
     <div class="col">
-        <button class="btn btn-primary btn-lg  float-xl-end" @onclick="PostFlight">Add new flight</button>
+        <button class="btn btn-primary btn-lg  float-xl-end" @onclick="CreateFlight">Add new flight</button>
     </div>
 </div>
 @if (flights == null)
@@ -69,6 +69,14 @@ else
     ModalType="Create" />
 }
 
+@if (FlightState.ShowingDeleteDialog)
+{
+    <ConfirmationModal Flight="FlightState.ConfiguringFlight"
+               OnCancel="FlightState.CancelConfigureFlightDialog"
+                       OnConfirm="FlightState.ConfirmDeleteFlightDialog"
+               Message="Are you sure you want to delete this flight?" />
+}
+
 
 @code {
 
@@ -86,19 +94,7 @@ else
         StateHasChanged();
     }
 
-    private async Task DeleteFlight(Flight flight)
-    {
-        var response = await HttpClient.DeleteAsync($"{NavigationManager.BaseUri}flights/{flight.Id}");
 
-        if (response.IsSuccessStatusCode)
-        {
-            flights?.Remove(flight);
-        }
-        else
-        {
-            //manejar error
-        }
-    }
 
     private void EditFlight(Flight flight)
     {
@@ -110,10 +106,15 @@ else
         await RefreshFlights();
     }
 
-    private void PostFlight()
+    private void CreateFlight()
     {
         Flight flight = new();
         FlightState.ShowConfigureFlightDialog(flight, "Post");
+    }
+
+    private void DeleteFlight(Flight flight)
+    {
+        FlightState.ShowConfigureFlightDialog(flight, "Delete");
     }
 
     

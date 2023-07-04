@@ -9,6 +9,7 @@ public class FlightState
 {
     public bool ShowingPostDialog;
     public bool ShowingEditDialog;
+    public bool ShowingDeleteDialog;
 
     public Flight? ConfiguringFlight { get; private set; }
 
@@ -36,7 +37,9 @@ public class FlightState
 
         if (type == "Edit")
             ShowingEditDialog = true;
-        else ShowingPostDialog = true;
+        else if (type == "Post")
+            ShowingPostDialog = true;
+        else ShowingDeleteDialog = true;
     }
 
     public void CancelConfigureFlightDialog()
@@ -44,6 +47,7 @@ public class FlightState
         ConfiguringFlight = null;
         ShowingEditDialog = false;
         ShowingPostDialog = false;
+        ShowingDeleteDialog = false;
     }
 
     public async Task ConfirmEditFlightDialog()
@@ -55,7 +59,6 @@ public class FlightState
         ConfiguringFlight = null;
         OnConfirmConfigureFlightDialog?.Invoke();
         ShowingEditDialog = false;
-        ShowingPostDialog = false;
     }
 
     public async Task ConfirmPostFlightDialog()
@@ -66,8 +69,15 @@ public class FlightState
 
         ConfiguringFlight = null;
         OnConfirmConfigureFlightDialog?.Invoke();
-        ShowingEditDialog = false;
         ShowingPostDialog = false;
+    }
+
+    public async Task ConfirmDeleteFlightDialog()
+    {
+        var response = await httpClient.DeleteAsync($"{navigationManager.BaseUri}flights/{ConfiguringFlight?.Id}");
+
+        OnConfirmConfigureFlightDialog?.Invoke();
+        ShowingDeleteDialog = false;
     }
 
 

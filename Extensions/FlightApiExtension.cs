@@ -68,7 +68,7 @@ namespace IntegrationProject.Extensions
                 await _context.Flight.AddAsync(flight);
                 await _context.SaveChangesAsync();
 
-                string serializedFlight = JsonConvert.SerializeObject(flight);
+                string serializedFlight = JsonConvert.SerializeObject(flight, Newtonsoft.Json.Formatting.Indented);
                 return Results.Created($"/flights/{flight.Id}", serializedFlight);
             });
 
@@ -108,7 +108,7 @@ namespace IntegrationProject.Extensions
                     {
                         flight.AirlineId = airline.Id;
                     }
-                    else flight.AirlineId = 1; // aerolinea desconocida en mi db
+                    else flight.AirlineId = 1; // aerolinea desconocida en mi db, le pongo aleatoriamente la primera
                 }
 
 

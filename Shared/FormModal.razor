@@ -27,7 +27,7 @@
                             <ValidationMessage For="@(() => Flight.Takeoff)" />
                         </div>
 
-                        <div style="margin-top:20px">
+                        <div style="margin-top:20px;margin-bottom:20px">
                             <label>Delayed </label>
                             <InputCheckbox @bind-Value="Flight.Delayed" /> 
                         </div>
@@ -35,7 +35,7 @@
                      
                     </div>
                     <div class="dialog-buttons">
-                        <button class="btn btn-secondary mr-auto" @onclick="OnCancel">Cancel</button>
+                        <button type="button" class="btn btn-secondary mr-auto" @onclick="OnCancel">Cancel</button>
                         <button type="submit" class="btn btn-success ml-auto">Submit</button>
                     </div>
                     

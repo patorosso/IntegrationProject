@@ -1,0 +1,32 @@
+﻿@using IntegrationProject.Models;
+@using Microsoft.AspNetCore.Components.Forms
+
+<div class="dialog-container">
+    <div class="dialog col-sm-3">
+        <div class="dialog-title">
+            <h2>Wait</h2>
+        </div>
+
+        <div>
+            <div style="margin-top:10px" class="col-sm-5 mx-auto">
+                <p>@Message</p>
+            </div>
+        </div>
+
+        <div class="dialog-buttons">
+            <button type="button" class="btn btn-secondary mr-auto" @onclick="OnCancel">Cancel</button>
+            <button type="button" class="btn btn-success ml-auto" @onclick="OnConfirm">Confirm</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public required Flight Flight { get; set; }
+    [Parameter]
+    public required string Message { get; set; }
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+    [Parameter]
+    public EventCallback OnConfirm { get; set; }
+}
