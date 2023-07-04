@@ -7,11 +7,17 @@
 @inject FlightState FlightState
 
 <PageTitle>Flight List</PageTitle>
-
-<h1>Flight list</h1>
-
-<p>Listing flights from all around the world.</p>
-
+<div class="row">
+    <div class="col">
+        <div>
+            <h1>Flight list</h1>
+            <p>Listing flights from all around the world.</p>
+        </div>
+    </div>
+    <div class="col">
+        <button class="btn btn-primary btn-lg  float-xl-end" @onclick="PostFlight">Add new flight</button>
+    </div>
+</div>
 @if (flights == null)
 {
     <p><em>Loading...</em></p>
@@ -37,7 +43,7 @@ else
                     <td><div style="margin-top:7px">@(flight.Delayed == false ? "On time" : "Delayed")</div></td>
                     <td><div style="margin-top:7px">@flight.Takeoff</div></td>
                     <td>
-                        <button class="btn btn-warning" @onclick="() => FlightState.ShowConfigureFlightDialog(flight)">Edit</button>
+                        <button class="btn btn-warning" @onclick="() => EditFlight(flight)">Edit</button>
                         <button class="btn btn-danger" @onclick="() => DeleteFlight(flight)">Delete</button>
                     </td>
                 </tr>
@@ -46,12 +52,21 @@ else
     </table>
 }
 
-@if (FlightState.ShowingConfigureDialog)
+@if (FlightState.ShowingEditDialog)
 {
     <FormModal Flight="FlightState.ConfiguringFlight"
     OnCancel="FlightState.CancelConfigureFlightDialog"
-    OnConfirm="FlightState.ConfirmConfigureFlightDialog"
+    OnConfirm="FlightState.ConfirmEditFlightDialog"
+    ModalType="Edit"
     />
+}
+
+@if (FlightState.ShowingPostDialog)
+{
+    <FormModal Flight="FlightState.ConfiguringFlight"
+    OnCancel="FlightState.CancelConfigureFlightDialog"
+    OnConfirm="FlightState.ConfirmPostFlightDialog"
+    ModalType="Create" />
 }
 
 
@@ -59,8 +74,17 @@ else
 
     private List<Flight>? flights;
 
-    protected override async Task OnInitializedAsync() => flights = await
-    HttpClient.GetFromJsonAsync<List<Flight>>($"{NavigationManager.BaseUri}flights");
+    protected override async Task OnInitializedAsync()
+    {
+        FlightState.OnConfirmConfigureFlightDialog += HandleConfigureFlightDialogConfirm;
+        await RefreshFlights();
+    }
+
+    private async Task RefreshFlights()
+    {
+        flights = await HttpClient.GetFromJsonAsync<List<Flight>>($"{NavigationManager.BaseUri}flights");
+        StateHasChanged();
+    }
 
     private async Task DeleteFlight(Flight flight)
     {
@@ -72,8 +96,26 @@ else
         }
         else
         {
-            // Handle error scenario
+            //manejar error
         }
     }
+
+    private void EditFlight(Flight flight)
+    {
+        FlightState.ShowConfigureFlightDialog(flight,"Edit");
+    }
+
+    private async Task HandleConfigureFlightDialogConfirm()
+    {
+        await RefreshFlights();
+    }
+
+    private void PostFlight()
+    {
+        Flight flight = new();
+        FlightState.ShowConfigureFlightDialog(flight, "Post");
+    }
+
+    
 
 }

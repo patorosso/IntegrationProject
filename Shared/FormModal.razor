@@ -1,12 +1,11 @@
 ﻿@using IntegrationProject.Models;
-@inject HttpClient HttpClient
 @using Microsoft.AspNetCore.Components.Forms
 
 
 <div class="dialog-container">
     <div class="dialog col-sm-3">
         <div class="dialog-title">
-            <h2>@Flight.FlightNumber</h2>
+            <h2>@ModalType</h2>
         </div>
        
             <div>
@@ -50,6 +49,8 @@
 @code {
     [Parameter]
     public required Flight Flight { get; set; }
+    [Parameter]
+    public required String ModalType { get; set; }
     [Parameter]
     public EventCallback OnCancel { get; set; }
     [Parameter]
