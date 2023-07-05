@@ -4,7 +4,7 @@
     {
         public static List<UserModel> Users = new()
             {
-                    new UserModel(){ Username="naeem",Password="naeem_admin",Role="Admin"}
+                    new UserModel(){ Username="admin",Password="admin1234",Role="Admin"}
             };
     }
 }

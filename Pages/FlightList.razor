@@ -2,6 +2,8 @@
 @using IntegrationProject.Data
 @using IntegrationProject.Models;
 @using IntegrationProject.FlightState;
+@using System.Net.Http.Headers;
+@using Microsoft.AspNetCore.Identity;
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 @inject FlightState FlightState
@@ -17,6 +19,10 @@
     <div class="col">
         <button class="btn btn-primary btn-lg  float-xl-end" @onclick="CreateFlight">Add new flight</button>
     </div>
+
+    <div class="col">
+        <button class="btn btn-primary btn-lg float-xl-end" @onclick="SeedRolesAsync">Seed Roles</button>
+    </div>
 </div>
 @if (flights == null)
 {
@@ -31,7 +37,9 @@ else
                 <th>Airline</th>
                 <th>Status</th>
                 <th>Departure</th>
+                <AuthorizeView>
                 <th>Actions</th>
+                </AuthorizeView>
             </tr>
         </thead>
         <tbody>
@@ -42,11 +50,14 @@ else
                     <td><div style="margin-top:7px">@flight.Airline?.Name</div></td>
                     <td><div style="margin-top:7px">@(flight.Delayed == false ? "On time" : "Delayed")</div></td>
                     <td><div style="margin-top:7px">@flight.Takeoff</div></td>
+                    <AuthorizeView>
                     <td>
                         <button class="btn btn-warning" @onclick="() => EditFlight(flight)">Edit</button>
                         <button class="btn btn-danger" @onclick="() => DeleteFlight(flight)">Delete</button>
                     </td>
+                    </AuthorizeView>
                 </tr>
+
             }
         </tbody>
     </table>
@@ -72,13 +83,21 @@ else
 @if (FlightState.ShowingDeleteDialog)
 {
     <ConfirmationModal Flight="FlightState.ConfiguringFlight"
-               OnCancel="FlightState.CancelConfigureFlightDialog"
-                       OnConfirm="FlightState.ConfirmDeleteFlightDialog"
-               Message="Are you sure you want to delete this flight?" />
+    OnCancel="FlightState.CancelConfigureFlightDialog"
+    OnConfirm="FlightState.ConfirmDeleteFlightDialog"
+    Message="Are you sure you want to delete this flight?" />
 }
 
 
 @code {
+    private async Task SeedRolesAsync()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Post, $"{NavigationManager.BaseUri}api/Role");
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", "your_bearer_token");
+
+        var response = await HttpClient.SendAsync(request);
+           
+    }
 
     private List<Flight>? flights;
 

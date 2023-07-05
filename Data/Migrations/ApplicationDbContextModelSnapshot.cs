@@ -45,7 +45,7 @@ namespace IntegrationProject.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Airline");
+                    b.ToTable("Airline", (string)null);
                 });
 
             modelBuilder.Entity("IntegrationProject.Models.Flight", b =>
@@ -75,7 +75,7 @@ namespace IntegrationProject.Data.Migrations
 
                     b.HasIndex("AirlineId");
 
-                    b.ToTable("Flight");
+                    b.ToTable("Flight", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

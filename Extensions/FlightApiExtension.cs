@@ -2,6 +2,7 @@
 using IntegrationProject.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Data;
 
 namespace IntegrationProject.Extensions
 {
@@ -85,7 +86,7 @@ namespace IntegrationProject.Extensions
                 _context.Flight.Remove(flight);
                 await _context.SaveChangesAsync();
                 return Results.NoContent();
-            });
+            }).RequireAuthorization();
 
             builder.MapPut("flights/{id}", async (ApplicationDbContext _context, int id, Flight flight) =>
             {
