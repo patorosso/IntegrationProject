@@ -1,4 +1,4 @@
-﻿@page "/fetchdata"
+﻿@page "/flightlist"
 @using IntegrationProject.Data
 @using IntegrationProject.Models;
 @using IntegrationProject.FlightState;
@@ -7,6 +7,7 @@
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 @inject FlightState FlightState
+
 
 <PageTitle>Flight List</PageTitle>
 <div class="row">
@@ -19,11 +20,9 @@
     <div class="col">
         <button class="btn btn-primary btn-lg  float-xl-end" @onclick="CreateFlight">Add new flight</button>
     </div>
-
-    <div class="col">
-        <button class="btn btn-primary btn-lg float-xl-end" @onclick="SeedRolesAsync">Seed Roles</button>
-    </div>
 </div>
+
+
 @if (flights == null)
 {
     <p><em>Loading...</em></p>
@@ -90,14 +89,6 @@ else
 
 
 @code {
-    private async Task SeedRolesAsync()
-    {
-        var request = new HttpRequestMessage(HttpMethod.Post, $"{NavigationManager.BaseUri}api/Role");
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", "");
-
-        var response = await HttpClient.SendAsync(request);
-           
-    }
 
     private List<Flight>? flights;
 

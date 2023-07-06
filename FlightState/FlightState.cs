@@ -1,6 +1,9 @@
+using IntegrationProject.Data;
 using IntegrationProject.Models;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
+using System.Security.Claims;
 using System.Text;
 
 namespace IntegrationProject.FlightState;
@@ -16,12 +19,14 @@ public class FlightState
     public event Func<Task>? OnConfirmConfigureFlightDialog;
 
     private readonly HttpClient httpClient;
+    private readonly IHttpContextAccessor _accessor;
     private readonly NavigationManager navigationManager;
 
-    public FlightState(HttpClient httpClient, NavigationManager navigationManager)
+    public FlightState(HttpClient httpClient, NavigationManager navigationManager, IHttpContextAccessor accessor)
     {
         this.httpClient = httpClient;
         this.navigationManager = navigationManager;
+        this._accessor = accessor;
     }
 
     public void ShowConfigureFlightDialog(Flight flight, String type)
@@ -74,7 +79,26 @@ public class FlightState
 
     public async Task ConfirmDeleteFlightDialog()
     {
-        var response = await httpClient.DeleteAsync($"{navigationManager.BaseUri}flights/{ConfiguringFlight?.Id}");
+
+        string username = _accessor.HttpContext!.User.Identity!.Name!;
+
+        IList<string> roles = _accessor.HttpContext.User.Claims
+            .Where(c => c.Type == ClaimTypes.Role)
+            .Select(c => c.Value)
+            .ToList();
+
+        UserModel userModel = new UserModel()
+        {
+            Username = username,
+            Role = roles.FirstOrDefault()
+        };
+
+        var content = new StringContent(JsonConvert.SerializeObject(userModel), Encoding.UTF8, "application/json");
+        var response = await httpClient.PostAsync($"{navigationManager.BaseUri}api/Login/", content);
+        string token = await response.Content.ReadAsStringAsync();
+        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        response = await httpClient.DeleteAsync($"{navigationManager.BaseUri}flights/{ConfiguringFlight?.Id}");
 
         OnConfirmConfigureFlightDialog?.Invoke();
         ShowingDeleteDialog = false;

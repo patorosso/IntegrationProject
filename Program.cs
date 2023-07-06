@@ -12,19 +12,18 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-
-
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 
 builder.Services.AddAuthentication()
-    .AddJwtBearer(options =>
+    .AddJwtBearer("JWTScheme", options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -39,15 +38,19 @@ builder.Services.AddAuthentication()
 });
 
 
-//builder.Services.AddScoped<ProtectedSessionStorage>();
-//builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
-
-
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("JWTScheme", policy =>
+    {
+        policy.AuthenticationSchemes.Add("JWTScheme");
+        policy.RequireRole("Admin");
+    });
+});
 
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<FlightState>();
 builder.Services.AddHttpClient();
 

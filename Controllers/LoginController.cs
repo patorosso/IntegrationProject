@@ -21,17 +21,17 @@ namespace IntegrationProject.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public ActionResult Login([FromBody] UserLogin userLogin)
+        public ActionResult Login([FromBody] UserModel userModel)
         {
-            var user = Authenticate(userLogin);
-            if (user != null)
+            if (userModel != null)
             {
-                var token = GenerateToken(user);
+                var token = GenerateToken(userModel);
                 return Ok(token);
             }
 
             return NotFound("user not found");
         }
+
 
         // To generate token
         private string GenerateToken(UserModel user)
@@ -54,17 +54,7 @@ namespace IntegrationProject.Controllers
 
         }
 
-        //To authenticate user
-        private UserModel? Authenticate(UserLogin userLogin)
-        {
-            var currentUser = UserConstants.Users.FirstOrDefault(x => x.Username?.ToLower() ==
-                userLogin?.Username?.ToLower() && x.Password == userLogin?.Password);
-            if (currentUser != null)
-            {
-                return currentUser;
-            }
-            return null;
-        }
+
     }
 
 
