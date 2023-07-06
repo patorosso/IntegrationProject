@@ -3,7 +3,6 @@ using IntegrationProject.Data;
 using IntegrationProject.Extensions;
 using IntegrationProject.FlightState;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -16,7 +15,6 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -24,8 +22,6 @@ builder.Services.AddAuthentication(options =>
     .AddCookie(options =>
     {
         options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
-        options.SlidingExpiration = true;
-        options.AccessDeniedPath = "/Forbidden/";
     })
     .AddJwtBearer(options =>
 {
@@ -41,9 +37,13 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+//builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
 builder.Services.AddTransient<UserService>();
 builder.Services.AddScoped<ProtectedSessionStorage>();
-builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+//builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+
 
 builder.Services.AddAuthorization();
 

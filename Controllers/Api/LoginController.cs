@@ -50,7 +50,7 @@ namespace IntegrationProject.Controllers.Api
         }
         */
 
-        [Authorize(AuthenticationSchemes = "DefaultScheme")]
+        [Authorize]
         [HttpPost]
         public ActionResult GetToken()
         {
@@ -88,8 +88,8 @@ namespace IntegrationProject.Controllers.Api
         //To authenticate user
         private UserModel? Authenticate(UserLogin userLogin)
         {
-            var currentUser = _context.CustomUser.FirstOrDefault(x => x.Username!.ToLower()! ==
-                userLogin!.Username!.ToLower() && x.Password == userLogin!.Password);
+            var currentUser = _context.CustomUser.FirstOrDefault(c => c.Username!.ToLower()! ==
+                userLogin!.Username!.ToLower() && c.PasswordHash == userLogin!.Password);
             if (currentUser != null)
             {
                 return currentUser;

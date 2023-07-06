@@ -1,0 +1,35 @@
+﻿@page "/login"
+@model IntegrationProject.Pages.LoginModel
+ 
+<div class="container">
+    <div class="row text-center">
+        <div class="col">
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-danger" role="alert">
+                    @Model.ErrorMessage
+                </div>
+            }
+ 
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <form method="POST">
+                <h2>User Login</h2>
+                <div class="mb-3">
+                    <label for="Username" class="form-label">Email</label>
+                    <input asp-for="UserLogin.Username" type="text" class="form-control" id="Username" />
+                </div>
+ 
+                <div class="mb-3">
+                    <label for="Password" class="form-label">Password</label>
+                    <input asp-for="UserLogin.Password" type="password" class="form-control" id="Password" />
+                </div>
+ 
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+        </div>
+ 
+    </div>
+</div>

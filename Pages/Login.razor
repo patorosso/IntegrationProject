@@ -1,10 +1,11 @@
-﻿@page "/login"
+﻿@page "/login_razorcomponent"
 @using IntegrationProject.Authentication;
 @inject UserService userService
 @inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager navigationManager
 
-
+<AuthorizeView>
+    <NotAuthorized>
 <div class="row">
     <div class="col-lg-4 offset-lg-4 pt-4 pb-4 border">
         <div class="mb-0border-3 text-center">
@@ -23,19 +24,21 @@
         </div>
     </div>
 </div>
+    </NotAuthorized>
+    <Authorized>
+        <p>You are already logged in.</p>
+    </Authorized>
+</AuthorizeView>
 
 @code {
-    private class Model
-    {
-        public string? Username { get; set; }
-        public string? Password { get; set; }
-    }
-    private Model model = new Model();
+    
+    private UserLogin model = new UserLogin();
 
     private async Task Authenticate()
     {
+        /*
         var user = userService.GetByUserName(model.Username!);
-        if(user == null || user.Password != model.Password)
+        if(user == null || user.PasswordHash != model.Password)
         {
             //hacer algo
             return;
@@ -49,7 +52,18 @@
                 Role = user.Role
             });
         navigationManager.NavigateTo("/", true);
+        */
+
+        var response = await userService.UserLoginAsync(model);
+
+        if (string.IsNullOrEmpty(response))
+        {
+            navigationManager.NavigateTo("/", true);
+        }
+        
     }
+
+
     
 
 }
