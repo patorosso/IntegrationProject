@@ -1,12 +1,10 @@
 ﻿@page "/flightlist"
-@using IntegrationProject.Data
-@using IntegrationProject.Models;
-@using IntegrationProject.FlightState;
+@using IntegrationProject.Data.Models;
+@using IntegrationProject.States;
 @using System.Net.Http.Headers;
-@using Microsoft.AspNetCore.Identity;
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
-@inject FlightState FlightState
+@inject FlightState flightState
 
 
 <PageTitle>Flight List</PageTitle>
@@ -62,28 +60,28 @@ else
     </table>
 }
 
-@if (FlightState.ShowingEditDialog)
+@if (flightState.ShowingEditDialog)
 {
-    <FormModal Flight="FlightState.ConfiguringFlight"
-    OnCancel="FlightState.CancelConfigureFlightDialog"
-    OnConfirm="FlightState.ConfirmEditFlightDialog"
+    <FormModal Flight="flightState.ConfiguringFlight"
+    OnCancel="flightState.CancelConfigureFlightDialog"
+    OnConfirm="flightState.ConfirmEditFlightDialog"
     ModalType="Edit"
     />
 }
 
-@if (FlightState.ShowingPostDialog)
+@if (flightState.ShowingPostDialog)
 {
-    <FormModal Flight="FlightState.ConfiguringFlight"
-    OnCancel="FlightState.CancelConfigureFlightDialog"
-    OnConfirm="FlightState.ConfirmPostFlightDialog"
+    <FormModal Flight="flightState.ConfiguringFlight"
+    OnCancel="flightState.CancelConfigureFlightDialog"
+    OnConfirm="flightState.ConfirmPostFlightDialog"
     ModalType="Create" />
 }
 
-@if (FlightState.ShowingDeleteDialog)
+@if (flightState.ShowingDeleteDialog)
 {
-    <ConfirmationModal Flight="FlightState.ConfiguringFlight"
-    OnCancel="FlightState.CancelConfigureFlightDialog"
-    OnConfirm="FlightState.ConfirmDeleteFlightDialog"
+    <ConfirmationModal Flight="flightState.ConfiguringFlight"
+    OnCancel="flightState.CancelConfigureFlightDialog"
+    OnConfirm="flightState.ConfirmDeleteFlightDialog"
     Message="Are you sure you want to delete this flight?" />
 }
 
@@ -94,7 +92,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        FlightState.OnConfirmConfigureFlightDialog += HandleConfigureFlightDialogConfirm;
+        flightState.OnConfirmConfigureFlightDialog += HandleConfigureFlightDialogConfirm;
         await RefreshFlights();
     }
 
@@ -106,7 +104,7 @@ else
 
     private void EditFlight(Flight flight)
     {
-        FlightState.ShowConfigureFlightDialog(flight,"Edit");
+        flightState.ShowConfigureFlightDialog(flight,"Edit");
     }
 
     private async Task HandleConfigureFlightDialogConfirm()
@@ -117,14 +115,13 @@ else
     private void CreateFlight()
     {
         Flight flight = new();
-        FlightState.ShowConfigureFlightDialog(flight, "Post");
+        flightState.ShowConfigureFlightDialog(flight, "Post");
     }
 
     private void DeleteFlight(Flight flight)
     {
-        FlightState.ShowConfigureFlightDialog(flight, "Delete");
+        flightState.ShowConfigureFlightDialog(flight, "Delete");
     }
 
     
-
 }

@@ -1,5 +1,4 @@
-﻿using IntegrationProject.Data;
-using IntegrationProject.Models;
+﻿using IntegrationProject.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Data;
@@ -23,10 +22,6 @@ namespace IntegrationProject.Extensions
             {
                 if (flight == null)
                     return Results.BadRequest(flight);
-
-                // if (flight.Id == 0)
-                //    return Results.StatusCode(StatusCodes.Status500InternalServerError);
-
 
                 string[] parts = flight.FlightNumber.Split(' ');
                 if (parts.Length != 2)
@@ -94,7 +89,6 @@ namespace IntegrationProject.Extensions
                 if (flight == null)
                     Results.NotFound();
 
-
                 string[] parts = flight!.FlightNumber.Split(' ');
 
                 var airline = _context.Airline.FirstOrDefault(a => a.Iata == parts[0]);
@@ -109,7 +103,7 @@ namespace IntegrationProject.Extensions
                     {
                         flight.AirlineId = airline.Id;
                     }
-                    else flight.AirlineId = 1; // aerolinea desconocida en mi db, le pongo aleatoriamente la primera
+                    else flight.AirlineId = 1; // aerolinea desconocida en mi db, le pongo la primera
                 }
 
 

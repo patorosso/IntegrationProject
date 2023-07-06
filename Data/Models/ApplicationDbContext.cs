@@ -1,8 +1,7 @@
-﻿using IntegrationProject.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace IntegrationProject.Data
+namespace IntegrationProject.Data.Models
 {
     public class ApplicationDbContext : IdentityDbContext
     {

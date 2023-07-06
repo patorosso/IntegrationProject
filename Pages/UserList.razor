@@ -1,7 +1,67 @@
 ﻿@page "/userlist"
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+@using IntegrationProject.Data.Models;
 
-<h3>UserList</h3>
+<div class="col">
+    <button class="btn btn-primary btn-lg">Register a new user</button>
+</div>
+
+@if (users == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <AuthorizeView>
+                    <th>Actions</th>
+                </AuthorizeView>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in users)
+            {
+                <tr>
+                    <AuthorizeView>
+                    <td><div style="margin-top:7px">@user.Username</div></td>
+                    <td><div style="margin-top:7px">@user.Role</div></td>
+                    
+                        <td>
+                            <button class="btn btn-danger" >Delete</button>
+                        </td>
+                    </AuthorizeView>
+                </tr>
+
+            }
+        </tbody>
+    </table>
+}
+
 
 @code {
+    private List<UserModel>? users;
 
+    protected override async Task OnInitializedAsync()
+    {
+        //FlightState.OnConfirmConfigureFlightDialog += HandleConfigureFlightDialogConfirm;
+        await RefreshUsers();
+    }
+
+    private async Task RefreshUsers()
+    {
+        users = await HttpClient.GetFromJsonAsync<List<UserModel>>($"{NavigationManager.BaseUri}users");
+        StateHasChanged();
+    }
+
+    private async Task HandleConfigureFlightDialogConfirm()
+    {
+        await RefreshUsers();
+    }
+
+    
 }

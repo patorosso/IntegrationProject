@@ -1,12 +1,11 @@
-using IntegrationProject.Data;
-using IntegrationProject.Models;
+using IntegrationProject.Data.Models;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
 
-namespace IntegrationProject.FlightState;
+namespace IntegrationProject.States;
 
 public class FlightState
 {

@@ -1,7 +1,7 @@
 using IntegrationProject.Areas.Identity;
-using IntegrationProject.Data;
+using IntegrationProject.Data.Models;
 using IntegrationProject.Extensions;
-using IntegrationProject.FlightState;
+using IntegrationProject.States;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -52,6 +52,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<FlightState>();
+builder.Services.AddScoped<UserState>();
 builder.Services.AddHttpClient();
 
 
@@ -84,6 +85,7 @@ app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
 app.MapFlightApi();
+app.MapUserApi();
 
 
 app.Run();

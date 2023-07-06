@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace IntegrationProject.Models
+namespace IntegrationProject.Data.Models
 {
     public class Airline
     {

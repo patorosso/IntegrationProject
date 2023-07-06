@@ -1,12 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using IntegrationProject.Data.Validations;
+using System.ComponentModel.DataAnnotations;
 
-namespace IntegrationProject.Models
+namespace IntegrationProject.Data.Models
 {
     public class Flight
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "El campo es obligatorio.")]
+        [Required(ErrorMessage = "The field is required.")]
         [FlightNumberValidation]
         [StringLength(maximumLength: 12)]
         public string FlightNumber { get; set; } = null!;
@@ -17,11 +18,9 @@ namespace IntegrationProject.Models
 
         public bool Delayed { get; set; }
 
-        [Required(ErrorMessage = "El campo es obligatorio.")]
+        [TakeoffValidation]
+        [Required(ErrorMessage = "The field is required.")]
         public DateTime? Takeoff { get; set; }
-
-
-
 
 
     }

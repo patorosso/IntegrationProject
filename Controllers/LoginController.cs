@@ -1,4 +1,4 @@
-﻿using IntegrationProject.Data;
+﻿using IntegrationProject.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
