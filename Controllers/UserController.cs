@@ -1,4 +1,5 @@
 ﻿using IntegrationProject.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -12,7 +13,7 @@ namespace IntegrationProject.Controllers
         //For admin Only
         [HttpGet]
         [Route("Admins")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult AdminEndPoint()
         {
             var currentUser = GetCurrentUser();

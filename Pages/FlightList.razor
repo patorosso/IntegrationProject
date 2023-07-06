@@ -93,7 +93,7 @@ else
     private async Task SeedRolesAsync()
     {
         var request = new HttpRequestMessage(HttpMethod.Post, $"{NavigationManager.BaseUri}api/Role");
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", "your_bearer_token");
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", "");
 
         var response = await HttpClient.SendAsync(request);
            
@@ -112,8 +112,6 @@ else
         flights = await HttpClient.GetFromJsonAsync<List<Flight>>($"{NavigationManager.BaseUri}flights");
         StateHasChanged();
     }
-
-
 
     private void EditFlight(Flight flight)
     {
