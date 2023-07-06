@@ -16,13 +16,11 @@
             <p>Listing flights from all around the world.</p>
         </div>
     </div>
+    <AuthorizeView>
     <div class="col">
         <button class="btn btn-primary btn-lg  float-xl-end" @onclick="CreateFlight">Add new flight</button>
     </div>
-
-    <div class="col">
-        <button class="btn btn-primary btn-lg float-xl-end" @onclick="SeedRolesAsync">Seed Roles</button>
-    </div>
+    </AuthorizeView>
 </div>
 @if (flights == null)
 {
@@ -90,14 +88,6 @@ else
 
 
 @code {
-    private async Task SeedRolesAsync()
-    {
-        var request = new HttpRequestMessage(HttpMethod.Post, $"{NavigationManager.BaseUri}api/Role");
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", "");
-
-        var response = await HttpClient.SendAsync(request);
-           
-    }
 
     private List<Flight>? flights;
 

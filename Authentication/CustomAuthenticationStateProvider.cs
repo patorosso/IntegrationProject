@@ -28,7 +28,7 @@ namespace IntegrationProject.Authentication
             return await Task.FromResult(new AuthenticationState(claimsPrincipal));
         }
 
-        public async Task UpdateAuthenticationState(UserSession userSession)
+        public async Task UpdateAuthenticationState(UserSession? userSession)
         {
             ClaimsPrincipal claimsPrincipal;
 

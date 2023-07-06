@@ -1,10 +1,10 @@
-﻿using IntegrationProject.Data;
+﻿using IntegrationProject.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace IntegrationProject.Controllers
+namespace IntegrationProject.Controllers.Api
 {
     [Route("api/[controller]")]
     [ApiController]

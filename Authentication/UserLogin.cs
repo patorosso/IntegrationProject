@@ -1,4 +1,4 @@
-﻿namespace IntegrationProject.Data
+﻿namespace IntegrationProject.Authentication
 {
     public class UserLogin
     {

@@ -1,6 +1,7 @@
 using IntegrationProject.Models;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace IntegrationProject.FlightState;
@@ -74,7 +75,16 @@ public class FlightState
 
     public async Task ConfirmDeleteFlightDialog()
     {
-        var response = await httpClient.DeleteAsync($"{navigationManager.BaseUri}flights/{ConfiguringFlight?.Id}");
+
+        var httpClient = new HttpClient();
+
+        var response = await httpClient.PostAsync($"{navigationManager.BaseUri}api/Login/", null);
+
+        string token = await response.Content.ReadAsStringAsync();
+
+        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        response = await httpClient.DeleteAsync($"{navigationManager.BaseUri}flights/{ConfiguringFlight?.Id}");
 
         OnConfirmConfigureFlightDialog?.Invoke();
         ShowingDeleteDialog = false;

@@ -1,4 +1,8 @@
-﻿@inherits LayoutComponentBase
+﻿@using IntegrationProject.Authentication;
+@inherits LayoutComponentBase
+@inject AuthenticationStateProvider authStateProvider
+@inject NavigationManager navigationManager
+
 
 <PageTitle>IntegrationProject</PageTitle>
 
@@ -9,12 +13,31 @@
 
     <main>
         <div class="top-row px-4 auth">
-            <LoginDisplay />
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            <AuthorizeView>
+                <Authorized>
+                    <a>Hello @context.User.Identity?.Name !</a>
+                    <a @onclick="Logout" href="javascript:void(0)">Logout</a>
+                </Authorized>
+                <NotAuthorized>
+                    <a href="/login">Login</a>
+                </NotAuthorized>
+            </AuthorizeView>
         </div>
+
+        
 
         <article class="content px-4">
             @Body
         </article>
     </main>
 </div>
+
+@code
+{
+    private async Task Logout()
+    {
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        await customAuthStateProvider.UpdateAuthenticationState(null);
+        navigationManager.NavigateTo("/", true);
+    }
+}
