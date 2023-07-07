@@ -13,8 +13,9 @@ public class FlightState
     public bool ShowingEditDialog;
     public bool ShowingDeleteDialog;
 
+    public DateTime TokenLife;
+    private string? Token;
     public Flight? ConfiguringFlight { get; private set; }
-
     public event Func<Task>? OnConfirmConfigureFlightDialog;
 
     private readonly HttpClient httpClient;
@@ -56,6 +57,13 @@ public class FlightState
 
     public async Task ConfirmEditFlightDialog()
     {
+        TimeSpan diff = TokenLife - DateTime.Now;
+
+        if (Token == null || diff <= TimeSpan.Zero)
+            await GetTokenUsingCookie();
+
+        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
+
         var content = new StringContent(JsonConvert.SerializeObject(ConfiguringFlight), Encoding.UTF8, "application/json");
 
         var response = await httpClient.PutAsync($"{navigationManager.BaseUri}flights/{ConfiguringFlight?.Id}", content);
@@ -67,6 +75,13 @@ public class FlightState
 
     public async Task ConfirmPostFlightDialog()
     {
+        TimeSpan diff = TokenLife - DateTime.Now;
+
+        if (Token == null || diff <= TimeSpan.Zero)
+            await GetTokenUsingCookie();
+
+        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
+
         var content = new StringContent(JsonConvert.SerializeObject(ConfiguringFlight), Encoding.UTF8, "application/json");
 
         var response = await httpClient.PostAsync($"{navigationManager.BaseUri}flights/", content);
@@ -77,6 +92,21 @@ public class FlightState
     }
 
     public async Task ConfirmDeleteFlightDialog()
+    {
+        TimeSpan diff = TokenLife - DateTime.Now;
+
+        if (Token == null || diff <= TimeSpan.Zero)
+            await GetTokenUsingCookie();
+
+        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
+
+        var response = await httpClient.DeleteAsync($"{navigationManager.BaseUri}flights/{ConfiguringFlight?.Id}");
+
+        OnConfirmConfigureFlightDialog?.Invoke();
+        ShowingDeleteDialog = false;
+    }
+
+    private async Task GetTokenUsingCookie()
     {
         string username = _accessor.HttpContext!.User.Identity!.Name!;
 
@@ -91,18 +121,17 @@ public class FlightState
             Role = roles.FirstOrDefault()
         };
 
-        string cookieValue = _accessor.HttpContext.Request.Cookies[".AspNetCore.Identity.Application"]!; //accedo al valor de la cookie
-        httpClient.DefaultRequestHeaders.Add("Cookie", $".AspNetCore.Identity.Application={cookieValue}"); //agrego la cookei al header de la request
+        string cookieValue = _accessor.HttpContext!.Request.Cookies[".AspNetCore.Identity.Application"]!;
+
+        httpClient.DefaultRequestHeaders.Add("Cookie", $".AspNetCore.Identity.Application={cookieValue}"); //agrego la cookie al header de la request
+
 
         var content = new StringContent(JsonConvert.SerializeObject(userModel), Encoding.UTF8, "application/json");
-        var response = await httpClient.PostAsync($"{navigationManager.BaseUri}api/Login/", content);
-        string token = await response.Content.ReadAsStringAsync();
+        var response = await httpClient.PostAsync($"{navigationManager.BaseUri}api/AuthJWT/", content);
 
-        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        response = await httpClient.DeleteAsync($"{navigationManager.BaseUri}flights/{ConfiguringFlight?.Id}");
+        Token = await response.Content.ReadAsStringAsync();
+        TokenLife = DateTime.Now.AddMinutes(2);
 
-        OnConfirmConfigureFlightDialog?.Invoke();
-        ShowingDeleteDialog = false;
     }
 
 

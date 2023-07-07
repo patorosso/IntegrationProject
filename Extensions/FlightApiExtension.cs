@@ -66,7 +66,7 @@ namespace IntegrationProject.Extensions
 
                 string serializedFlight = JsonConvert.SerializeObject(flight, Newtonsoft.Json.Formatting.Indented);
                 return Results.Created($"/flights/{flight.Id}", serializedFlight);
-            });
+            }).RequireAuthorization("JWTScheme");
 
             builder.MapDelete("flights/{id}", async (ApplicationDbContext _context, int id) =>
             {
@@ -119,7 +119,7 @@ namespace IntegrationProject.Extensions
 
                 await _context.SaveChangesAsync();
                 return Results.Ok(flight);
-            });
+            }).RequireAuthorization("JWTScheme");
 
 
             return builder;

@@ -9,7 +9,6 @@ namespace IntegrationProject.Data.Models
             : base(options)
         {
         }
-
         public DbSet<Flight> Flight => Set<Flight>();
         public DbSet<Airline> Airline => Set<Airline>();
     }

@@ -1,12 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IntegrationProject.Controllers
 {
 
     [Route("api/[controller]")]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     [ApiController]
     public class RoleController : ControllerBase
     {
@@ -16,7 +15,6 @@ namespace IntegrationProject.Controllers
         {
             _roleManager = roleManager;
         }
-
 
         [HttpPost]
         public async Task<IActionResult> SeedRoles()

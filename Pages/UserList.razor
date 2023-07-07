@@ -3,43 +3,50 @@
 @inject NavigationManager NavigationManager
 @using IntegrationProject.Data.Models;
 
-<div class="col">
-    <button class="btn btn-primary btn-lg">Register a new user</button>
-</div>
+<AuthorizeView>
+    <div class="col">
+        <a href="Identity/Account/Register"
+           class="btn btn-primary btn-lg" 
+        style="text-decoration: none;margin-bottom:20px">
+        Register a new user</a>
+    </div>
+</AuthorizeView>
+ 
 
 @if (users == null)
 {
     <p><em>Loading...</em></p>
 }
+else if (users.Count() == 1) //solo esta el mismo usuario
+{
+    <p><em>No other users to display.</em></p>
+}
 else
 {
+<AuthorizeView>
     <table class="table">
         <thead>
             <tr>
                 <th>Name</th>
                 <th>Role</th>
-                <AuthorizeView>
                     <th>Actions</th>
-                </AuthorizeView>
             </tr>
         </thead>
         <tbody>
-            @foreach (var user in users)
+            @foreach (var user in users.Where(u => u.Username != @context.User.Identity?.Name)) //excluyo al usuario actual
             {
                 <tr>
-                    <AuthorizeView>
                     <td><div style="margin-top:7px">@user.Username</div></td>
                     <td><div style="margin-top:7px">@user.Role</div></td>
                     
                         <td>
                             <button class="btn btn-danger" >Delete</button>
                         </td>
-                    </AuthorizeView>
                 </tr>
-
             }
         </tbody>
     </table>
+</AuthorizeView>
 }
 
 
