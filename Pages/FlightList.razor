@@ -15,7 +15,7 @@
             <p>Listing flights from all around the world.</p>
         </div>
     </div>
-    <AuthorizeView>
+    <AuthorizeView Roles="Admin">
     <div class="col">
         <button class="btn btn-primary btn-lg  float-xl-end" @onclick="CreateFlight">Add new flight</button>
     </div>
@@ -36,7 +36,7 @@ else
                 <th>Airline</th>
                 <th>Status</th>
                 <th>Departure</th>
-                <AuthorizeView>
+                <AuthorizeView Roles="Admin">
                 <th>Actions</th>
                 </AuthorizeView>
             </tr>
@@ -49,7 +49,7 @@ else
                     <td><div style="margin-top:7px">@flight.Airline?.Name</div></td>
                     <td><div style="margin-top:7px">@(flight.Delayed == false ? "On time" : "Delayed")</div></td>
                     <td><div style="margin-top:7px">@flight.Takeoff</div></td>
-                    <AuthorizeView>
+                    <AuthorizeView Roles="Admin">
                     <td>
                         <button class="btn btn-warning" @onclick="() => EditFlight(flight)">Edit</button>
                         <button class="btn btn-danger" @onclick="() => DeleteFlight(flight)">Delete</button>
