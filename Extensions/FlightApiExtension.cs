@@ -80,7 +80,7 @@ namespace IntegrationProject.Extensions
 
                 _context.Flight.Remove(flight);
                 await _context.SaveChangesAsync();
-                return Results.NoContent();
+                return Results.Ok();
             }).RequireAuthorization("JWTScheme");
 
             builder.MapPut("flights/{id}", async (ApplicationDbContext _context, int id, Flight flight) =>

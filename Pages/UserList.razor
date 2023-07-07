@@ -1,7 +1,9 @@
 ﻿@page "/userlist"
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
+@inject UserState userState
 @using IntegrationProject.Data.Models;
+@using IntegrationProject.States
 
 <AuthorizeView>
     <div class="col">
@@ -38,9 +40,9 @@ else
                 <tr>
                     <td><div style="margin-top:7px">@user.Username</div></td>
                     <td><div style="margin-top:7px">@user.Role</div></td>
-                    
                         <td>
-                            <button class="btn btn-danger" >Delete</button>
+                            <button class="btn btn-success" @onclick="() => EditUser(user)">Change Role</button>
+                            <button class="btn btn-danger" @onclick="() => DeleteUser(user)">Delete</button>
                         </td>
                 </tr>
             }
@@ -49,26 +51,52 @@ else
 </AuthorizeView>
 }
 
+@if (userState.ShowingEditDialog)
+{
+    <RoleForm UserModel="userState.UserModel"
+               OnCancel="userState.CancelConfigureUserDialog"
+               OnConfirm="userState.ConfirmEditUserDialog"
+               />
+}
+
+@if (userState.ShowingDeleteDialog)
+{
+    <ConfirmationModal Item="userState.UserModel"
+                       OnCancel="userState.CancelConfigureUserDialog"
+                       OnConfirm="userState.ConfirmDeleteUserDialog"
+                       Message="Are you sure you want to delete this user?" />
+}
+
 
 @code {
     private List<UserModel>? users;
-
+    
     protected override async Task OnInitializedAsync()
     {
-        //FlightState.OnConfirmConfigureFlightDialog += HandleConfigureFlightDialogConfirm;
+        userState.OnConfirmConfigureUserDialog += HandleConfigureUserDialogConfirm;
         await RefreshUsers();
     }
-
+    
     private async Task RefreshUsers()
     {
         users = await HttpClient.GetFromJsonAsync<List<UserModel>>($"{NavigationManager.BaseUri}users");
         StateHasChanged();
     }
 
-    private async Task HandleConfigureFlightDialogConfirm()
+    private async Task HandleConfigureUserDialogConfirm()
     {
         await RefreshUsers();
     }
 
+    private void EditUser(UserModel userModel)
+    {
+        userState.ShowConfigureUserDialog(userModel, "Edit");
+    }
+
+    private void DeleteUser(UserModel userModel)
+    {
+        userState.ShowConfigureUserDialog(userModel, "Delete");
+    }
+    
     
 }

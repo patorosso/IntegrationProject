@@ -1,0 +1,46 @@
+﻿@using IntegrationProject.Data.Models;
+@using Microsoft.AspNetCore.Components.Forms
+
+
+<div class="dialog-container">
+    <div class="dialog col-sm-3">
+        <div class="dialog-title">
+        </div>
+
+        <div>
+            <EditForm Model="UserModel" OnValidSubmit="OnConfirm">
+                <DataAnnotationsValidator />
+                <div class="col-sm-5 mx-auto">
+                    <div>
+                        <label class="form-label mt-4" for="Role">
+                            Role:
+                            <InputSelect @bind-Value="UserModel.Role" class="form-control">
+                                <option>User</option>
+                                <option>Admin</option>
+                            </InputSelect>
+                        </label>
+                        <ValidationMessage For="@(() => UserModel.Role)" />
+                    </div>
+                </div>
+                <div class="dialog-buttons">
+                    <button type="button" class="btn btn-secondary mr-auto" @onclick="OnCancel">Cancel</button>
+                    <button type="submit" class="btn btn-success ml-auto">Submit</button>
+                </div>
+
+            </EditForm>
+
+
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public required UserModel UserModel { get; set; }
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+    [Parameter]
+    public EventCallback OnConfirm { get; set; }
+
+
+}

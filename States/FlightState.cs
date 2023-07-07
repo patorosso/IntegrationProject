@@ -18,14 +18,14 @@ public class FlightState
     public Flight? ConfiguringFlight { get; private set; }
     public event Func<Task>? OnConfirmConfigureFlightDialog;
 
-    private readonly HttpClient httpClient;
+    private readonly HttpClient _httpClient;
     private readonly IHttpContextAccessor _accessor;
-    private readonly NavigationManager navigationManager;
+    private readonly NavigationManager _navigationManager;
 
     public FlightState(HttpClient httpClient, NavigationManager navigationManager, IHttpContextAccessor accessor)
     {
-        this.httpClient = httpClient;
-        this.navigationManager = navigationManager;
+        this._httpClient = httpClient;
+        this._navigationManager = navigationManager;
         this._accessor = accessor;
     }
 
@@ -62,11 +62,11 @@ public class FlightState
         if (Token == null || diff <= TimeSpan.Zero)
             await GetTokenUsingCookie();
 
-        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
 
         var content = new StringContent(JsonConvert.SerializeObject(ConfiguringFlight), Encoding.UTF8, "application/json");
 
-        var response = await httpClient.PutAsync($"{navigationManager.BaseUri}flights/{ConfiguringFlight?.Id}", content);
+        var response = await _httpClient.PutAsync($"{_navigationManager.BaseUri}flights/{ConfiguringFlight?.Id}", content);
 
         ConfiguringFlight = null;
         OnConfirmConfigureFlightDialog?.Invoke();
@@ -80,11 +80,11 @@ public class FlightState
         if (Token == null || diff <= TimeSpan.Zero)
             await GetTokenUsingCookie();
 
-        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
 
         var content = new StringContent(JsonConvert.SerializeObject(ConfiguringFlight), Encoding.UTF8, "application/json");
 
-        var response = await httpClient.PostAsync($"{navigationManager.BaseUri}flights/", content);
+        var response = await _httpClient.PostAsync($"{_navigationManager.BaseUri}flights/", content);
 
         ConfiguringFlight = null;
         OnConfirmConfigureFlightDialog?.Invoke();
@@ -98,9 +98,9 @@ public class FlightState
         if (Token == null || diff <= TimeSpan.Zero)
             await GetTokenUsingCookie();
 
-        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
 
-        var response = await httpClient.DeleteAsync($"{navigationManager.BaseUri}flights/{ConfiguringFlight?.Id}");
+        var response = await _httpClient.DeleteAsync($"{_navigationManager.BaseUri}flights/{ConfiguringFlight?.Id}");
 
         OnConfirmConfigureFlightDialog?.Invoke();
         ShowingDeleteDialog = false;
@@ -117,17 +117,18 @@ public class FlightState
 
         UserModel userModel = new UserModel()
         {
+            Id = "Id",
             Username = username,
             Role = roles.FirstOrDefault()
         };
 
         string cookieValue = _accessor.HttpContext!.Request.Cookies[".AspNetCore.Identity.Application"]!;
 
-        httpClient.DefaultRequestHeaders.Add("Cookie", $".AspNetCore.Identity.Application={cookieValue}"); //agrego la cookie al header de la request
+        _httpClient.DefaultRequestHeaders.Add("Cookie", $".AspNetCore.Identity.Application={cookieValue}"); //agrego la cookie al header de la request
 
 
         var content = new StringContent(JsonConvert.SerializeObject(userModel), Encoding.UTF8, "application/json");
-        var response = await httpClient.PostAsync($"{navigationManager.BaseUri}api/AuthJWT/", content);
+        var response = await _httpClient.PostAsync($"{_navigationManager.BaseUri}api/AuthJWT/", content);
 
         Token = await response.Content.ReadAsStringAsync();
         TokenLife = DateTime.Now.AddMinutes(2);

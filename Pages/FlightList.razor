@@ -81,7 +81,7 @@ else
 
 @if (flightState.ShowingDeleteDialog)
 {
-    <ConfirmationModal Flight="flightState.ConfiguringFlight"
+    <ConfirmationModal Item="flightState.ConfiguringFlight"
     OnCancel="flightState.CancelConfigureFlightDialog"
     OnConfirm="flightState.ConfirmDeleteFlightDialog"
     Message="Are you sure you want to delete this flight?" />
