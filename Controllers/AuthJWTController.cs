@@ -23,20 +23,19 @@ namespace IntegrationProject.Controllers
         [HttpPost]
         public ActionResult GetToken([FromBody] UserModel userModel)
         {
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
-            if (identity != null)
-            {
-                var token = GenerateToken(userModel);
-                return Ok(token);
-            }
+            if (userModel == null)
+                return BadRequest();
 
-            return NotFound("user not found");
+            var token = GenerateToken(userModel);
+            return Ok(token);
+
         }
 
         private string GenerateToken(UserModel user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier,user.Username!),

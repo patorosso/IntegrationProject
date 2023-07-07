@@ -50,7 +50,7 @@ namespace IntegrationProject.Extensions
                 await _userManager.AddToRoleAsync(user, userModel.Role!);
 
                 return Results.Ok(userModel);
-            });
+            }).RequireAuthorization("JWTScheme");
 
             builder.MapDelete("users/{id}", async (ApplicationDbContext _context, UserManager<IdentityUser> _userManager,
                 string id) =>
@@ -66,7 +66,7 @@ namespace IntegrationProject.Extensions
 
                 return Results.Ok();
 
-            });
+            }).RequireAuthorization("JWTScheme");
 
             return builder;
         }

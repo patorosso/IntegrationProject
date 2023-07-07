@@ -96,6 +96,7 @@ namespace IntegrationProject.States
 
             UserModel userModel = new UserModel()
             {
+                Id = "Id",
                 Username = username,
                 Role = roles.FirstOrDefault()
             };
