@@ -78,7 +78,6 @@ public class FlightState
 
     public async Task ConfirmDeleteFlightDialog()
     {
-
         string username = _accessor.HttpContext!.User.Identity!.Name!;
 
         IList<string> roles = _accessor.HttpContext.User.Claims
@@ -92,11 +91,14 @@ public class FlightState
             Role = roles.FirstOrDefault()
         };
 
+        string cookieValue = _accessor.HttpContext.Request.Cookies[".AspNetCore.Identity.Application"]!; //accedo al valor de la cookie
+        httpClient.DefaultRequestHeaders.Add("Cookie", $".AspNetCore.Identity.Application={cookieValue}"); //agrego la cookei al header de la request
+
         var content = new StringContent(JsonConvert.SerializeObject(userModel), Encoding.UTF8, "application/json");
         var response = await httpClient.PostAsync($"{navigationManager.BaseUri}api/Login/", content);
         string token = await response.Content.ReadAsStringAsync();
-        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
+        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         response = await httpClient.DeleteAsync($"{navigationManager.BaseUri}flights/{ConfiguringFlight?.Id}");
 
         OnConfirmConfigureFlightDialog?.Invoke();

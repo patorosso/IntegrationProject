@@ -11,19 +11,20 @@ namespace IntegrationProject.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    public class LoginController : ControllerBase
+    public class AuthJWTController : ControllerBase
     {
         private readonly IConfiguration _config;
-        public LoginController(IConfiguration config)
+        public AuthJWTController(IConfiguration config)
         {
             _config = config;
         }
 
-        [AllowAnonymous]
+        [Authorize] //usa cookie para acceder
         [HttpPost]
-        public ActionResult Login([FromBody] UserModel userModel)
+        public ActionResult GetToken([FromBody] UserModel userModel)
         {
-            if (userModel != null)
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity != null)
             {
                 var token = GenerateToken(userModel);
                 return Ok(token);
@@ -32,8 +33,6 @@ namespace IntegrationProject.Controllers
             return NotFound("user not found");
         }
 
-
-        // To generate token
         private string GenerateToken(UserModel user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));

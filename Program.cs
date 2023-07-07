@@ -37,7 +37,6 @@ builder.Services.AddAuthentication()
     };
 });
 
-
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("JWTScheme", policy =>
@@ -75,6 +74,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
 
 app.UseAuthentication();
 app.UseAuthorization();
